@@ -1,0 +1,36 @@
+{
+  "name": "svsoft/yii2-items-admin",
+  "description": "Content module for Yii2",
+  "type": "yii2-extension",
+  "keywords": ["yii2","extension","module"],
+  "license": "MIT",
+  "repositories": [
+    {
+      "type":"git",
+      "url":"https://github.com/svsoft/yii2-items-admin"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Viktor Shiryakov",
+      "email": "shiryakovv@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "yiisoft/yii2": "~2.0.14",
+    "imagine/imagine": "*",
+    "2amigos/yii2-ckeditor-widget": "^2.0",
+    "mihaildev/yii2-elfinder": "^1.2",
+    "unclead/yii2-multiple-input": "~2.0",
+    "kartik-v/yii2-datecontrol": "dev-master"
+  },
+  "extra": {
+
+  },
+  "autoload": {
+    "psr-4": {
+        "svsoft\\yii\\items\\admin\\": "src"
+    }
+  }
+}
