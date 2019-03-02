@@ -2,39 +2,32 @@
 
 namespace svsoft\yii\items\admin\controllers;
 
+use svsoft\yii\items\admin\components\ItemRelation;
+use svsoft\yii\items\entities\Field;
+use svsoft\yii\items\entities\ItemType;
+use svsoft\yii\items\exceptions\FieldNotFoundException;
 use svsoft\yii\items\exceptions\ItemNotFoundException;
 use svsoft\yii\items\exceptions\ItemTypeNotFoundException;
 use svsoft\yii\items\exceptions\ValidationErrorException;
 use svsoft\yii\items\repositories\ItemRepository;
 use svsoft\yii\items\repositories\ItemTypeRepository;
 use svsoft\yii\items\services\ItemManager;
-use svsoft\yii\items\services\ItemTypeManager;
 use Yii;
 use yii\data\ArrayDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 class ItemController extends Controller
 {
-
     /**
      * @var ItemManager
      */
     protected $itemManager;
 
-//    /**
-//     * @var Items
-//     */
-//    protected $items;
-
     public function init()
     {
-//        /** @var Items $items */
-//        $this->items = Yii::$container->get(Items::class);
-
-
         $this->itemManager = Yii::$container->get(ItemManager::class);
-
 
         parent::init();
     }
@@ -81,27 +74,70 @@ class ItemController extends Controller
         return $item;
     }
 
+    /**
+     * @param ItemType $itemType
+     * @param $relation
+     *
+     * @return ItemRelation
+     * @throws NotFoundHttpException
+     */
+    protected function parseRelation(ItemType $itemType, $relation)
+    {
+        if (!$relation)
+            return null;
 
-    public function actionIndex($type)
+        $ar = explode('-',$relation);
+
+        $fieldName = ArrayHelper::getValue($ar, 0);
+        $id = ArrayHelper::getValue($ar, 1);
+
+        try
+        {
+            $field = $itemType->getFieldByName($fieldName);
+        }
+        catch(FieldNotFoundException $exception)
+        {
+            throw new NotFoundHttpException('Страница не найдена');
+        }
+
+        if ($field->getType()->getId() != Field::TYPE_ITEM)
+            throw new NotFoundHttpException('Страница не найдена');
+
+        return new ItemRelation($fieldName, $id);
+    }
+
+    public function actionIndex($type, $relation = '')
     {
         $itemType = $this->getItemType($type);
 
         $query = $this->itemManager->createQuery($itemType);
         $query->indexBy('id');
 
+        if ($relation)
+        {
+            $relation = $this->parseRelation($itemType, $relation);
+            $query->andWhere($relation->toArray());
+        }
+
         $dataProvider = new ArrayDataProvider([
             'models' => $query->all(),
             'totalCount' => $query->count(),
         ]);
 
-        return $this->render('index', ['dataProvider'=>$dataProvider, 'itemType'=>$itemType] );
+        return $this->render('index', ['dataProvider'=>$dataProvider, 'itemType'=>$itemType, 'relation'=>$relation] );
     }
 
-    public function actionCreate($type)
+    public function actionCreate($type, $relation = '')
     {
         $itemType = $this->getItemType($type);
 
         $itemForm = $this->itemManager->createForm($itemType);
+
+        if ($relation)
+        {
+            $ar = $this->parseRelation($itemType, $relation);
+            $itemForm->{$ar['field']} = $ar['id'];
+        }
 
         if ($itemForm->load(Yii::$app->request->post()))
         {
@@ -110,7 +146,8 @@ class ItemController extends Controller
             try
             {
                 $this->itemManager->create($itemForm);
-                return $this->refresh();
+
+                return $this->redirect(['item/index','type'=>$type, 'relation'=>$relation]);
             }
             catch(ValidationErrorException $exception)
             {
@@ -121,21 +158,15 @@ class ItemController extends Controller
         return $this->render('create',['itemForm'=>$itemForm, 'itemType'=>$itemType]);
     }
 
-    public function actionUpdate($id)
+    public function actionUpdate($id, $relation = '')
     {
         $item = $this->getItem($id);
-
-//        /** @var Decorator $decorator */
-//        $decorator = Yii::$container->get(Decorator::class);
-//        /** @var Cacher $cacher */
-//        $cacher = Yii::$container->get(Cacher::class);
-//
-//        $cacher->cleanByItemType($item->getItemTypeId());
-
 
         /** @var ItemTypeRepository $itemTypeRepository */
         $itemTypeRepository = Yii::$container->get(ItemTypeRepository::class);
         $itemType = $itemTypeRepository->get($item->getItemTypeId());
+
+        $relation = $this->parseRelation($itemType, $relation);
 
         $itemForm = $this->itemManager->createForm($itemType);
         $itemForm->setItem($item);
@@ -155,7 +186,7 @@ class ItemController extends Controller
             }
         }
 
-        return $this->render('update', ['itemForm'=>$itemForm, 'itemType'=>$itemType] );
+        return $this->render('update', ['itemForm'=>$itemForm, 'itemType'=>$itemType,'item'=>$item, 'relation'=>$relation ] );
     }
 
     public function actionDelete($id)
