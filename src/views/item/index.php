@@ -26,7 +26,7 @@ $config  = \yii\helpers\ArrayHelper::getValue($module->gridViewConfig, $itemType
 
 <div class="item-index box box-primary">
     <div class="box-header with-border">
-        <?=\yii\helpers\Html::a('Добавить',['create', 'type'=>$itemType->getName(),'relation'=>$relation],['class'=>'btn btn-success'])?>
+        <?=\yii\helpers\Html::a('Добавить', ['create', 'type'=>$itemType->getName(),'relation' => (string)$relation],['class'=>'btn btn-success'])?>
     </div>
     <div class="box-body">
 

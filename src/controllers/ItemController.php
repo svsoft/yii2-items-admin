@@ -133,10 +133,9 @@ class ItemController extends Controller
 
         $itemForm = $this->itemManager->createForm($itemType);
 
-        if ($relation)
+        if ($relation = $this->parseRelation($itemType, $relation))
         {
-            $ar = $this->parseRelation($itemType, $relation);
-            $itemForm->{$ar['field']} = $ar['id'];
+            $itemForm->{$relation->fieldName} = $relation->itemId;
         }
 
         if ($itemForm->load(Yii::$app->request->post()))
@@ -147,7 +146,7 @@ class ItemController extends Controller
             {
                 $this->itemManager->create($itemForm);
 
-                return $this->redirect(['item/index','type'=>$type, 'relation'=>$relation]);
+                return $this->redirect(['item/index','type'=>$type, 'relation'=>(string)$relation]);
             }
             catch(ValidationErrorException $exception)
             {
@@ -155,7 +154,7 @@ class ItemController extends Controller
             }
         }
 
-        return $this->render('create',['itemForm'=>$itemForm, 'itemType'=>$itemType]);
+        return $this->render('create',['itemForm'=>$itemForm, 'itemType'=>$itemType, 'relation'=>$relation]);
     }
 
     public function actionUpdate($id, $relation = '')
