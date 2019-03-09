@@ -3,6 +3,7 @@
 namespace svsoft\yii\items\admin\controllers;
 
 use svsoft\yii\items\admin\components\ItemRelation;
+use svsoft\yii\items\admin\ItemsAdminModule;
 use svsoft\yii\items\entities\Field;
 use svsoft\yii\items\entities\ItemType;
 use svsoft\yii\items\exceptions\FieldNotFoundException;
@@ -18,6 +19,11 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Class ItemController
+ * @package svsoft\yii\items\admin\controllers
+ * @property ItemsAdminModule $module
+ */
 class ItemController extends Controller
 {
     /**
@@ -124,7 +130,11 @@ class ItemController extends Controller
             'totalCount' => $query->count(),
         ]);
 
-        return $this->render('index', ['dataProvider'=>$dataProvider, 'itemType'=>$itemType, 'relation'=>$relation] );
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+            'itemType'     => $itemType,
+            'relation'     => $relation,
+        ]);
     }
 
     public function actionCreate($type, $relation = '')
