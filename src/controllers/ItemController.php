@@ -38,6 +38,14 @@ class ItemController extends Controller
         parent::init();
     }
 
+    /**
+     * @param $name
+     *
+     * @return ItemType
+     * @throws NotFoundHttpException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\di\NotInstantiableException
+     */
     protected function getItemType($name)
     {
         /** @var ItemTypeRepository $itemTypeRepository */
@@ -141,7 +149,8 @@ class ItemController extends Controller
     {
         $itemType = $this->getItemType($type);
 
-        $itemForm = $this->itemManager->createForm($itemType);
+        $itemForm = $this->itemManager->createSaveModel($itemType);
+//        var_dump($itemForm);die();
 
         if ($relation = $this->parseRelation($itemType, $relation))
         {
@@ -154,7 +163,7 @@ class ItemController extends Controller
 
             try
             {
-                $this->itemManager->create($itemForm);
+                $itemForm->save();
 
                 return $this->redirect(['item/index','type'=>$type, 'relation'=>(string)$relation]);
             }
@@ -177,7 +186,8 @@ class ItemController extends Controller
 
         $relation = $this->parseRelation($itemType, $relation);
 
-        $itemForm = $this->itemManager->createForm($itemType);
+        $itemForm = $this->itemManager->createSaveModel($itemType);
+
         $itemForm->setItem($item);
 
         if ($itemForm->load(Yii::$app->request->post()))
@@ -186,7 +196,8 @@ class ItemController extends Controller
 
             try
             {
-                $this->itemManager->update($itemForm);
+                $itemForm->save();
+
                 return $this->refresh();
             }
             catch(ValidationErrorException $exception)
