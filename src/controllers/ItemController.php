@@ -157,10 +157,8 @@ class ItemController extends Controller
             $itemForm->{$relation->fieldName} = $relation->itemId;
         }
 
-        if ($itemForm->load(Yii::$app->request->post()))
+        if ($itemForm->load(Yii::$app->request->post()) || $itemForm->loadFiles($_FILES))
         {
-            $itemForm->loadFiles($_FILES);
-
             try
             {
                 $itemForm->save();
