@@ -157,7 +157,7 @@ class ItemController extends Controller
             $itemForm->{$relation->fieldName} = $relation->itemId;
         }
 
-        if ($itemForm->load(Yii::$app->request->post()) || $itemForm->loadFiles($_FILES))
+        if ($itemForm->load(Yii::$app->request->post()) | $itemForm->loadFiles($_FILES))
         {
             try
             {
@@ -188,7 +188,7 @@ class ItemController extends Controller
 
         $itemForm->setItem($item);
 
-        if ($itemForm->load(Yii::$app->request->post()) || $itemForm->loadFiles($_FILES))
+        if ($itemForm->load(Yii::$app->request->post()) | $itemForm->loadFiles($_FILES))
         {
             try
             {
