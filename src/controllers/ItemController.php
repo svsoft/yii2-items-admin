@@ -150,7 +150,6 @@ class ItemController extends Controller
         $itemType = $this->getItemType($type);
 
         $itemForm = $this->itemManager->createSaveModel($itemType);
-//        var_dump($itemForm);die();
 
         if ($relation = $this->parseRelation($itemType, $relation))
         {

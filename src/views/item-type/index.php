@@ -18,13 +18,15 @@ $this->title = 'Сисок типов элементов';
                     'value' => function(\svsoft\yii\items\entities\ItemType $itemType) {
                         return $itemType->getId();
                     },
-                    'label' => 'Ид'
+                    'label' => 'Ид',
+
                 ],
                 [
                     'value' => function(\svsoft\yii\items\entities\ItemType $itemType) {
-                        return $itemType->getName();
+                        return \yii\helpers\Html::a($itemType->getName(), ['view','id'=>$itemType->getId()]);
                     },
-                    'label' => 'Название'
+                    'label' => 'Название',
+                    'format' => 'html',
                 ],
                 [
                     'value' => function(\svsoft\yii\items\entities\ItemType $itemType) {

@@ -21,4 +21,20 @@ class ItemTypeController extends Controller
             'dataProvider'=>$dataProvider
         ] );
     }
+
+    function actionView($id)
+    {
+        /** @var ItemTypeRepository $itemTypeRepository */
+        $itemTypeRepository = \Yii::$container->get(ItemTypeRepository::class);
+
+        $itemType = $itemTypeRepository->get($id);
+
+        $fields = $itemType->getFields();
+        $dataProvider = new ArrayDataProvider(['models' => $fields]);
+
+        return $this->render('detail', [
+            'itemType' => $itemType,
+            'dataProvider'=>$dataProvider
+        ] );
+    }
 }
