@@ -49,7 +49,7 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
             'columns' => [
                 [
                     'class' => \yii\grid\ActionColumn::class,
-                    'contentOptions' => ['class' => 'text-center'],
+                    'contentOptions' => ['class' => 'text-center', 'style'=>'white-space: nowrap; width:1%;'],
                     'options' => ['class'=>'options'],
                     'visibleButtons' => [
                         'view' => false,
@@ -66,10 +66,11 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
 
 <?php
 $js = <<< JS
+
 $('#item-grid > table > tbody tr').dblclick(function() {
     window.location = $(this).data('href');
-    
-})
+});
+
 JS;
 $this->registerJs($js);
 ?>
