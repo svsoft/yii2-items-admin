@@ -39,6 +39,12 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
             'columns' => [
                 [
                     'class'=>\yii\grid\ActionColumn::class,
+                    'contentOptions' => ['class'=>'text-center'],
+                    'options' => ['class'=>'options'],
+                    'visibleButtons' => [
+                            'view'=>false,
+                    ],
+                    'buttonOptions' => ['class'=>['btn btn-default btn-sm']],
                     'urlCreator' => function ($action, $model, $key) use ($relation) {
                         return \yii\helpers\Url::to([$action, 'id' => $key, 'relation' => (string)$relation]);
                     }

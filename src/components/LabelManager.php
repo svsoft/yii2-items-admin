@@ -54,6 +54,7 @@ class LabelManager extends BaseObject
             'slug'        => 'Код Url',
             'label'       => 'Подпись',
             'code'        => 'Код',
+            'date'        => 'Дата',
         ], $this->fieldCommonLabels);
 
         parent::init();
