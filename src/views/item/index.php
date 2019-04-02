@@ -38,8 +38,8 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
             'labels' => $labels->fields,
             'columns' => [
                 [
-                    'class'=>\yii\grid\ActionColumn::class,
-                    'contentOptions' => ['class'=>'text-center'],
+                    'class' => \yii\grid\ActionColumn::class,
+                    'contentOptions' => ['class' => 'text-center'],
                     'options' => ['class'=>'options'],
                     'visibleButtons' => [
                             'view'=>false,
