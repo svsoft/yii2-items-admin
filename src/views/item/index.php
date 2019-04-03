@@ -14,21 +14,21 @@ $module = $controller->module;
 
 $config  = $module->getGridViewConfig($itemType->getName());
 
-$labels = $module->labelManager->getLabel($itemType);
+$label = $module->labelManager->getLabel($itemType);
 
 $itemTypeLabel = \yii\helpers\Inflector::camel2words( $itemType->getName(), true);
 
 if ($relation)
     $this->params['breadcrumbs'][] = ['label'=>$relation->getItem(), 'url'=> ['update', 'id'=>$relation->getItemId()] ];
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('items', $labels->items)];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('items', $label->items)];
 
-$this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('items', $labels->items);
+$this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('items', $label->items);
 ?>
 
 <div class="item-index box box-primary">
     <div class="box-header with-border">
-        <?=\yii\helpers\Html::a($labels->addItemButton, ['create', 'type'=>$itemType->getName(),'relation' => (string)$relation],['class'=>'btn btn-success'])?>
+        <?=\yii\helpers\Html::a($label->addItemButton, ['create', 'type'=>$itemType->getName(),'relation' => (string)$relation],['class'=>'btn btn-success'])?>
     </div>
     <div class="box-body">
 
@@ -37,7 +37,7 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
             'class'=>\svsoft\yii\items\widgets\ItemGridView::class,
             'dataProvider' => $dataProvider,
             'itemType' => $itemType,
-            'labels' => $labels->fields,
+            'labels' => $label->fields,
             'rowOptions' => function ($model, $key) use ($relation) {
                                 return [
                                         'data'=>[
