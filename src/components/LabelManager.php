@@ -3,7 +3,6 @@
 namespace svsoft\yii\items\admin\components;
 
 use svsoft\yii\items\entities\ItemType;
-use svsoft\yii\items\repositories\ItemTypeRepository;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -24,35 +23,39 @@ class LabelManager extends BaseObject
     /**
      * @var array
      */
-    public $fieldCommonLabels = [
-        'id' => 'Ид',
-        'name' => 'Наименование',
-        'sort' => 'Сортировка',
-        'title' => 'Заголовок',
-        'text' => 'Текст',
-        'content' => 'Контент',
-        'link' => 'Ссылка',
-        'image' => 'Картинка',
-        'images' => 'Картинки',
-        'file'  => 'Файл',
-        'files'  => 'Файлы',
-        'description'=>'Описание',
-        'slug'=>'Код Url',
-        'label'=>'Подпись',
-    ];
+    public $fieldCommonLabels = [];
 
 
     public function init()
     {
         $this->defaultLabel = [
-            'class'         => Label::class,
-            'addItemButton' => 'Добавить',
-            'addItemPage'   => 'Добавление',
+            'class'          => Label::class,
+            'addItemButton'  => 'Добавить',
+            'addItemPage'    => 'Добавление',
             'updateItemPage' => 'Редактирование',
-            'fields'        => [
+            'fields'         => [
                 'id' => 'Ид',
             ],
         ];
+
+        $this->fieldCommonLabels = ArrayHelper::merge([
+            'id'          => 'Ид',
+            'name'        => 'Наименование',
+            'sort'        => 'Сортировка',
+            'title'       => 'Заголовок',
+            'text'        => 'Текст',
+            'content'     => 'Контент',
+            'link'        => 'Ссылка',
+            'image'       => 'Картинка',
+            'images'      => 'Картинки',
+            'file'        => 'Файл',
+            'files'       => 'Файлы',
+            'description' => 'Описание',
+            'slug'        => 'Код Url',
+            'label'       => 'Подпись',
+            'code'        => 'Код',
+            'date'        => 'Дата',
+        ], $this->fieldCommonLabels);
 
         parent::init();
     }
@@ -63,9 +66,10 @@ class LabelManager extends BaseObject
     }
 
     /**
-     * @param $itemTypeName
+     * @param ItemType $itemType
      *
-     * @return Label
+     * @return mixed|Label
+     * @throws \yii\base\InvalidConfigException
      */
     public function getLabel(ItemType $itemType)
     {

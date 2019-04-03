@@ -33,12 +33,28 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
     <div class="box-body">
 
         <?=\svsoft\yii\items\widgets\ItemGridView::widget(\yii\helpers\ArrayHelper::merge([
+            'id' =>'item-grid',
+            'class'=>\svsoft\yii\items\widgets\ItemGridView::class,
             'dataProvider' => $dataProvider,
             'itemType' => $itemType,
             'labels' => $labels->fields,
+            'rowOptions' => function ($model, $key) use ($relation) {
+                                return [
+                                        'data'=>[
+                                                'href'=> \yii\helpers\Url::to(['item/update', 'id' => $key, 'relation' => (string)$relation]),
+                                        ]
+                                ];
+                            }
+            ,
             'columns' => [
                 [
-                    'class'=>\yii\grid\ActionColumn::class,
+                    'class' => \yii\grid\ActionColumn::class,
+                    'contentOptions' => ['class' => 'text-center', 'style'=>'white-space: nowrap; width:1%;'],
+                    'options' => ['class'=>'options'],
+                    'visibleButtons' => [
+                        'view' => false,
+                    ],
+                    'buttonOptions' => ['class'=>['btn btn-default btn-sm']],
                     'urlCreator' => function ($action, $model, $key) use ($relation) {
                         return \yii\helpers\Url::to([$action, 'id' => $key, 'relation' => (string)$relation]);
                     }
@@ -47,3 +63,14 @@ $this->title = ($relation ? $relation->getItem() . ' / ' : '') . ' ' . Yii::t('i
         ], $config));?>
     </div>
 </div>
+
+<?php
+$js = <<< JS
+
+$('#item-grid > table > tbody tr').dblclick(function() {
+    window.location = $(this).data('href');
+});
+
+JS;
+$this->registerJs($js);
+?>
