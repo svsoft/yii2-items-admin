@@ -16,15 +16,23 @@ class ItemsAdminModule extends Module
 {
     /**
      * Массив переопределения конфигурации ItemGridView
+     *
      * @var array
      */
     public $gridViewConfig = [];
+
+    /**
+     * Массив переопределения конфигурации ItemFormWidget
+     *
+     * @var array
+     */
+    public $itemFormConfig = [];
 
 
     public function init()
     {
         $labelManagerConfig = [
-            'class'=>LabelManager::class,
+            'class' => LabelManager::class,
         ];
 
         $labelManagerConfig = ArrayHelper::getValue($this->components, 'labelManager', $labelManagerConfig);
@@ -38,6 +46,13 @@ class ItemsAdminModule extends Module
     public function getGridViewConfig($itemTypeName)
     {
         $config = ArrayHelper::getValue($this->gridViewConfig, $itemTypeName, []);
+
+        return $config;
+    }
+
+    public function getItemFormConfig($itemTypeName)
+    {
+        $config = ArrayHelper::getValue($this->itemFormConfig, $itemTypeName, []);
 
         return $config;
     }

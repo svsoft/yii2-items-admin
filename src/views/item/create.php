@@ -14,6 +14,8 @@ $controller = $this->context;
 $module = $controller->module;
 $label = $module->labelManager->getLabel($itemType);
 
+$config  = $module->getItemFormConfig($itemType->getName());
+
 $itemTypeLabel = \yii\helpers\Inflector::camel2words( $itemType->getName(), true);
 
 if ($relation)
@@ -31,24 +33,12 @@ $this->title = $label->addItemPage;
 
 ?>
 
-<div class="item-index box box-primary">
-    <div class="box-header with-border">
-    </div>
-    <div class="box-body">
+<?$form = \svsoft\yii\items\widgets\ItemFormWidget::begin(\yii\helpers\ArrayHelper::merge([
+    'itemForm' => $itemForm,
+    'labels'   => $label->fields,
+], $config));
+?>
 
-        <?$form = \svsoft\yii\items\widgets\ItemFormWidget::begin([
-            'itemForm' => $itemForm,
-            'labels' => $label->fields,
-        ]);
-        ?>
+<?=$form->renderBlocks()?>
 
-        <?foreach($form->fields() as $field):?>
-            <?=$field?>
-        <?endforeach;?>
-
-        <?=\yii\helpers\Html::submitButton('Сохранить')?>
-
-        <? \svsoft\yii\items\widgets\ItemFormWidget::end()?>
-
-    </div>
-</div>
+<? \svsoft\yii\items\widgets\ItemFormWidget::end()?>

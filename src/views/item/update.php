@@ -16,7 +16,10 @@ use yii\helpers\Html;
 $controller = $this->context;
 /** @var $module \svsoft\yii\items\admin\ItemsAdminModule */
 $module = $controller->module;
+
 $label = $module->labelManager->getLabel($itemType);
+
+$config  = $module->getItemFormConfig($itemType->getName());
 
 $itemTypeLabel = \yii\helpers\Inflector::camel2words( $itemType->getName(), true);
 
@@ -35,25 +38,23 @@ $this->endBlock();
 $this->title = Yii::t('items', $label->updateItemPage) . '(' . $item . ')';
 ?>
 
+<?if ($relatedContent = \svsoft\yii\items\widgets\RelatedItemsWidget::widget(['item' => $item, 'labelManager' => $module->labelManager])):?>
 <div class="item-index box box-primary">
     <div class="box-header with-border">
-        <?=\svsoft\yii\items\widgets\RelatedItemsWidget::widget(['item' => $item,'labelManager' => $module->labelManager])?>
+        <h3 class="box-title">Данные</h3>
     </div>
     <div class="box-body">
-
-        <?$form = \svsoft\yii\items\widgets\ItemFormWidget::begin([
-            'itemForm' => $itemForm,
-            'labels'=>$label->fields,
-        ]);
-        ?>
-
-        <?foreach($form->fields() as $field):?>
-            <?=$field?>
-        <?endforeach;?>
-
-        <?=\yii\helpers\Html::submitButton('Сохранить')?>
-
-        <? \svsoft\yii\items\widgets\ItemFormWidget::end()?>
-
+        <?=$relatedContent?>
     </div>
 </div>
+<?endif;?>
+
+<?$form = \svsoft\yii\items\widgets\ItemFormWidget::begin(\yii\helpers\ArrayHelper::merge([
+    'itemForm' => $itemForm,
+    'labels'   => $label->fields,
+], $config));
+?>
+
+<?=$form->renderBlocks()?>
+
+<? \svsoft\yii\items\widgets\ItemFormWidget::end()?>
