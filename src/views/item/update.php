@@ -41,7 +41,7 @@ $this->title = Yii::t('items', $label->updateItemPage) . '(' . $item . ')';
 <?if ($relatedContent = \svsoft\yii\items\widgets\RelatedItemsWidget::widget(['item' => $item, 'labelManager' => $module->labelManager])):?>
 <div class="item-index box box-primary">
     <div class="box-header with-border">
-        <h3 class="box-title">Данные</h3>
+        <h3 class="box-title">Связанные элементы</h3>
     </div>
     <div class="box-body">
         <?=$relatedContent?>
