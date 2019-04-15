@@ -156,12 +156,17 @@ class ItemController extends Controller
             $itemForm->{$relation->fieldName} = $relation->itemId;
         }
 
+        $data = Yii::$app->request->get('data',[]);
+
+        $itemForm->setAttributes($data);
+
         if ($itemForm->load(Yii::$app->request->post()) | $itemForm->loadFiles($_FILES))
         {
+            $itemForm->setAttributes($data);
+
             try
             {
                 $itemForm->save();
-
                 return $this->redirect(['item/index','type'=>$type, 'relation'=>(string)$relation]);
             }
             catch(ValidationErrorException $exception)
@@ -171,6 +176,26 @@ class ItemController extends Controller
         }
 
         return $this->render('create',['itemForm'=>$itemForm, 'itemType'=>$itemType, 'relation'=>$relation]);
+    }
+
+    public function actionOpen($type, $relation = '')
+    {
+        $itemType = $this->getItemType($type);
+
+        $data = Yii::$app->request->get('data', []);
+
+        foreach($data as $attribute=>$value)
+        {
+            if (!$itemType->hasFieldByName($attribute))
+                throw new NotFoundHttpException("Attribute \"$attribute\" not found");
+        }
+
+        $item = $this->itemManager->createQuery($itemType)->andWhere($data)->one();
+
+        if ($item)
+            return $this->actionUpdate($item->getId(), $relation);
+
+        return $this->actionCreate($type, $relation);
     }
 
     public function actionUpdate($id, $relation = '')
